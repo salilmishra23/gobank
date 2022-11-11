@@ -1,11 +1,11 @@
 postgres:
-	podman run --name postgres14 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:14-alpine
+	podman run --name postgres15 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:15-alpine
 
 createdb:
-	podman exec -it postgres14 createdb --username=root --owner=root gobank
+	podman exec -it postgres15 createdb --username=root --owner=root gobank
 
 dropdb:
-	podman exec -it postgres14 dropdb gobank
+	podman exec -it postgres15 dropdb gobank
 
 migrateup:
 	migrate -path db/migrations -database "postgresql://root:secret@localhost:5432/gobank?sslmode=disable" -verbose up	
@@ -16,6 +16,9 @@ migratedown:
 sqlc:
 	sqlc generate
 
-.PHONY: createdb dropdb postgres migrateup migratedown sqlc
+test:
+	go test -v -cover ./...
+
+.PHONY: createdb dropdb postgres migrateup migratedown sqlc test
 
 # psql -U root gobank
